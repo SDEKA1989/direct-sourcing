@@ -1,0 +1,435 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-background-tertiary: #f1f5f9;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-border-tertiary: rgba(0,0,0,0.07);
+  --color-border-secondary: rgba(0,0,0,0.15);
+  --color-border-primary: rgba(0,0,0,0.25);
+  --color-background-info: #eff6ff;
+  --color-text-info: #1d4ed8;
+  --color-background-success: #f0fdf4;
+  --color-text-success: #166534;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Consolas, monospace;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+}
+*{box-sizing:border-box;}
+body{font-family:var(--font-sans);background:#fff;margin:0;padding:20px;}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+.cj{font-family:var(--font-sans);padding:1.5rem 0;}
+
+/* ── Phase progress ── */
+.prog{display:flex;align-items:center;margin-bottom:32px;}
+.prog-step{display:flex;flex-direction:column;align-items:center;flex:1;cursor:pointer;position:relative;}
+.prog-connector{flex:1;height:2px;background:var(--color-border-tertiary);transition:background .4s;margin-top:-20px;z-index:0;}
+.prog-connector.done{background:var(--ph-c);}
+.prog-dot-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;z-index:1;}
+.prog-dot{width:44px;height:44px;border-radius:50%;border:2px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:var(--color-text-tertiary);background:var(--color-background-primary);transition:all .35s;position:relative;}
+.prog-dot.active{transform:scale(1.15);border-width:2px;}
+.prog-dot.done{color:#fff;border-width:0;}
+.prog-dot-label{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-align:center;transition:color .3s;white-space:nowrap;}
+.prog-dot.active+.prog-dot-label{font-weight:600;}
+
+/* ── Content ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.phase-body{animation:fadeUp .38s ease forwards;}
+
+/* ── Phase header ── */
+.ph-head{margin-bottom:24px;}
+.ph-eyebrow{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+.ph-title{font-size:24px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;}
+.ph-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.6;}
+
+/* ── Entry cards ── */
+.entry-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.e-card{border-radius:14px;padding:18px 18px 16px;border:0.5px solid;position:relative;overflow:hidden;transition:transform .22s;}
+.e-card:hover{transform:translateY(-3px);}
+.e-bar{position:absolute;top:0;left:0;width:4px;height:100%;border-radius:0;}
+.e-ghost{position:absolute;right:10px;top:6px;font-size:52px;font-weight:500;line-height:1;opacity:.07;}
+.e-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:500;margin-bottom:10px;}
+.e-title{font-size:14px;font-weight:500;margin-bottom:5px;}
+.e-desc{font-size:11px;line-height:1.55;}
+
+/* ── Converge arrow ── */
+.funnel{display:flex;flex-direction:column;align-items:center;margin:6px 0;}
+.funnel-line{width:2px;height:28px;background:var(--color-border-secondary);}
+.funnel-head{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;}
+
+/* ── CTA join box ── */
+.join-box{border-radius:14px;padding:22px 24px;text-align:center;border:2px solid;position:relative;overflow:hidden;cursor:pointer;transition:transform .22s;}
+.join-box:hover{transform:scale(1.01);}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.4;}100%{transform:scale(1.8);opacity:0;}}
+.join-pulse{position:absolute;inset:0;border-radius:14px;border:2px solid;animation:pulseRing 2s ease-out infinite;}
+.join-title{font-size:20px;font-weight:500;margin-bottom:4px;position:relative;}
+.join-sub{font-size:12px;position:relative;}
+
+/* ── Stepper ── */
+.stepper{display:flex;flex-direction:column;}
+.step-row{display:flex;gap:16px;}
+.step-left{display:flex;flex-direction:column;align-items:center;width:44px;flex-shrink:0;}
+.step-ball{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;border:2px solid;transition:all .3s;flex-shrink:0;}
+@keyframes dashFlow{to{stroke-dashoffset:-20;}}
+.step-svg-line{width:2px;flex:1;min-height:20px;display:flex;justify-content:center;}
+.step-content{flex:1;padding-bottom:18px;}
+.step-card{border-radius:12px;padding:14px 16px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);transition:border-color .3s;}
+.step-card-head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.step-card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.step-card-body{font-size:11px;color:var(--color-text-secondary);line-height:1.55;}
+.ai-chip{padding:2px 9px;border-radius:20px;font-size:10px;font-weight:500;background:#EEEDFE;color:#3C3489;border:0.5px solid #AFA9EC;}
+@keyframes chipGlow{0%,100%{border-color:#AFA9EC;}50%{border-color:#7F77DD;}}
+.ai-chip{animation:chipGlow 2.5s ease-in-out infinite;}
+
+/* ── Decision ── */
+.decision-card{border-radius:14px;padding:16px 20px;text-align:center;margin:20px 0;border:1.5px dashed;}
+.decision-title{font-size:14px;font-weight:500;}
+.decision-sub{font-size:11px;margin-top:4px;}
+.fork-row{display:flex;gap:12px;}
+.fork-card{flex:1;border-radius:14px;padding:16px;border:0.5px solid;}
+.fork-title{font-size:14px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.fork-sub{font-size:11px;margin-bottom:12px;}
+.fork-step{font-size:11px;padding:7px 10px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);margin-top:6px;display:flex;align-items:center;gap:6px;}
+.fork-step::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* ── Platform modules ── */
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.mod-card{border-radius:14px;padding:14px;border:1.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);cursor:pointer;transition:all .22s;position:relative;}
+.mod-card:hover{transform:translateY(-2px);border-color:var(--mc);}
+.mod-card.sel{border-color:var(--mc);background:var(--mb);}
+.mod-icon-wrap{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;transition:background .3s;}
+.mod-title{font-size:12px;font-weight:500;color:var(--color-text-primary);transition:color .2s;}
+.mod-card.sel .mod-title{color:var(--mt);}
+.mod-count{font-size:10px;color:var(--color-text-tertiary);margin-top:3px;}
+.mod-future-tag{position:absolute;top:8px;right:8px;font-size:9px;padding:2px 6px;border-radius:8px;background:#FBEAF0;color:#993556;font-weight:500;}
+
+/* Detail panel */
+@keyframes panelIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.detail-panel{border-radius:14px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);overflow:hidden;animation:panelIn .28s ease forwards;}
+.detail-header{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:0.5px solid var(--color-border-tertiary);}
+.detail-icon-big{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.detail-h-title{font-size:16px;font-weight:500;color:var(--color-text-primary);}
+.detail-h-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.feat-list{padding:4px 0;}
+.feat-row{display:flex;align-items:flex-start;gap:12px;padding:11px 20px;border-bottom:0.5px solid var(--color-border-tertiary);transition:background .15s;}
+.feat-row:last-child{border-bottom:none;}
+.feat-row:hover{background:var(--color-background-secondary);}
+.feat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.feat-title{font-size:12px;font-weight:500;color:var(--color-text-primary);}
+.feat-desc{font-size:11px;color:var(--color-text-secondary);margin-top:2px;line-height:1.45;}
+
+/* ── Next CTA ── */
+.next-card{display:flex;align-items:center;justify-content:space-between;border-radius:12px;padding:14px 18px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;transition:all .2s;margin-top:16px;}
+.next-card:hover{transform:translateX(4px);}
+.next-text{font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.next-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px;}
+.next-arrow{font-size:20px;color:var(--color-text-tertiary);}
+
+/* ── Footer nav ── */
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:18px;border-top:0.5px solid var(--color-border-tertiary);}
+.foot-btn{padding:9px 22px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);transition:all .2s;}
+.foot-btn:not(:disabled):hover{background:var(--color-background-tertiary);}
+.foot-btn:disabled{opacity:.3;cursor:default;}
+.foot-dots{display:flex;gap:6px;align-items:center;}
+.foot-dot{height:8px;border-radius:4px;background:var(--color-border-secondary);transition:all .35s;}
+</style>
+
+<div class="cj" id="cj">
+  <div class="prog" id="prog"></div>
+  <div id="content"></div>
+</div>
+
+<script>
+var cur=0, selMod='dashboard';
+
+var PH=[
+  {label:'Entry',        sub:'How candidates discover & join',       color:'#1D9E75',bg:'#E1F5EE',text:'#085041'},
+  {label:'Onboarding',   sub:'Building the candidate profile',        color:'#378ADD',bg:'#E6F1FB',text:'#0C447C'},
+  {label:'Verification', sub:'Recruiter approves community fit',       color:'#BA7517',bg:'#FAEEDA',text:'#633806'},
+  {label:'Platform',     sub:'Everything inside — features & tools',  color:'#7F77DD',bg:'#EEEDFE',text:'#3C3489'}
+];
+
+var MODS=[
+  {id:'dashboard',label:'Dashboard',color:'#185FA5',bg:'#E6F1FB',text:'#0C447C',
+   desc:'Your at-a-glance command centre',
+   icon:'<rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".55"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".25"/>',
+   items:[
+    {l:'Top matching jobs',     d:'Curated exclusive community roles matched to your profile and skills'},
+    {l:'Application count',     d:'Live count of active, shortlisted, and completed applications'},
+    {l:'Application status',    d:'Plain-language status for every submission — no internal codes'},
+    {l:'Recent activity feed',  d:'Latest job alerts, new messages, and profile completion prompts'}
+   ]},
+  {id:'jobs',label:'Jobs',color:'#1D9E75',bg:'#E1F5EE',text:'#085041',
+   desc:'Explore and manage your applications',
+   icon:'<rect x="2" y="7" width="20" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="2" fill="none"/><line x1="2" y1="13" x2="22" y2="13" stroke="currentColor" stroke-width="1.5"/>',
+   items:[
+    {l:'Browse exclusive jobs',  d:'Community-only roles not advertised on any external job board'},
+    {l:'Filter & search',        d:'Filter by location, type, rate; search by skills or keyword'},
+    {l:'Save for later',         d:'Bookmark roles to come back to at a convenient time'},
+    {l:'1-click apply',          d:'Apply using your pre-filled community profile — no re-typing'},
+    {l:'Withdraw application',   d:'Cancel any previously submitted application at any point'},
+    {l:'Track status',           d:'Under review · Shortlisted · Interview · Offered — per role'}
+   ]},
+  {id:'profile',label:'My profile',color:'#534AB7',bg:'#EEEDFE',text:'#26215C',
+   desc:'Your identity and data rights',
+   icon:'<circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>',
+   items:[
+    {l:'Update details',       d:'Work history, skills, availability, location, and contact info'},
+    {l:'Profile photo',        d:'Upload or change your profile picture at any time'},
+    {l:'Manage consents',      d:'Control marketing, data usage, and communication preferences'},
+    {l:'Download my data',     d:'Export all personal data held on the platform — your GDPR right'},
+    {l:'Delete profile',       d:'Permanently remove your profile and all associated data'}
+   ]},
+  {id:'settings',label:'Settings',color:'#444441',bg:'#F1EFE8',text:'#2C2C2A',
+   desc:'Account, notifications & security',
+   icon:'<line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="15" cy="6" r="2.5" fill="currentColor"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="12" r="2.5" fill="currentColor"/><line x1="4" y1="18" x2="20" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="18" r="2.5" fill="currentColor"/>',
+   items:[
+    {l:'Notification preferences',d:'Choose which alerts to receive and via which channel: email, SMS, or push'},
+    {l:'Change email address',    d:'Update your login email — email-verified before change takes effect'},
+    {l:'Change password',         d:'Update your account password securely at any time'}
+   ]},
+  {id:'messaging',label:'Messaging',color:'#0C447C',bg:'#E6F1FB',text:'#042C53',
+   desc:'Direct conversations with recruiters',
+   icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>',
+   items:[
+    {l:'Recruiter-started chats', d:'Recruiter opens a conversation about a specific role or opportunity'},
+    {l:'Reply and discuss',       d:'Ask questions, share availability, clarify details — all in-platform'},
+    {l:'Full message history',    d:'Every conversation stored and searchable — never lost'}
+   ]},
+  {id:'future',label:'Future',color:'#72243E',bg:'#FBEAF0',text:'#4B1528',future:true,
+   desc:'Coming soon — advanced engagement',
+   icon:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor" opacity=".35" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>',
+   items:[
+    {l:'NPS & satisfaction surveys',  d:'Rate your experience after key interactions on the platform'},
+    {l:'Skills assessments',          d:'Complete verified assessments to strengthen your profile credibility'},
+    {l:'Advanced services',           d:'Access premium tools and resources for your specialist industry'},
+    {l:'Badges & recognition',        d:'Earn community badges for tenure, activity, referrals, and achievements'}
+   ]}
+];
+
+function icon(svg,color,size){
+  size=size||20;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" style="color:'+color+'">'+svg+'</svg>';
+}
+
+function renderProg(){
+  var h='';
+  PH.forEach(function(p,i){
+    var done=i<cur, active=i===cur;
+    var dc=done?p.color:(active?p.color:'');
+    var dotStyle='border-color:'+(dc||'var(--color-border-tertiary)')+';'+(done?'background:'+p.color+';':'')+(active?'background:'+p.bg+';color:'+p.text+';border-color:'+p.color+';':'');
+    h+='<div class="prog-step" onclick="go('+i+')">'
+      +'<div class="prog-dot-wrap">'
+        +'<div class="prog-dot '+(done?'done':'')+(active?' active':'')+'" style="'+dotStyle+'">'+(done?'✓':(i+1))+'</div>'
+        +'<div class="prog-dot-label" style="color:'+(active?p.color:'var(--color-text-tertiary)')+'">'+p.label+'</div>'
+      +'</div>'
+    +'</div>';
+    if(i<PH.length-1){
+      h+='<div class="prog-connector '+(i<cur?'done':'')+'" style="--ph-c:'+PH[i].color+'"></div>';
+    }
+  });
+  document.getElementById('prog').innerHTML=h;
+}
+
+function renderEntry(){
+  var p=PH[0];
+  var entries=[
+    {n:'01',label:'Landing page',src:'Employer website',desc:'Candidate visits the branded employer community page and clicks "Join community" to begin.',accent:'#1D9E75'},
+    {n:'02',label:'External job board',src:'Job advertisement',desc:'Candidate sees a posted role on an external job board, clicks the link, and applies directly to the community.',accent:'#378ADD'},
+    {n:'03',label:'Recruiter invite',src:'Personal invitation',desc:'Recruiter sends a personalised email invite directly to a specific candidate they want in the community.',accent:'#BA7517'},
+    {n:'04',label:'Talent referral',src:'Member referral link',desc:'An existing community member shares a referral or donation link with their network.',accent:'#7F77DD'}
+  ];
+  var cards=entries.map(function(e){
+    return '<div class="e-card" style="background:'+e.accent+'0d;border-color:'+e.accent+'35;">'
+      +'<div class="e-bar" style="background:'+e.accent+'"></div>'
+      +'<div class="e-ghost" style="color:'+e.accent+'">'+e.n+'</div>'
+      +'<div class="e-badge" style="background:'+e.accent+'18;color:'+e.accent+'">'+e.src+'</div>'
+      +'<div class="e-title" style="color:var(--color-text-primary)">'+e.label+'</div>'
+      +'<div class="e-desc" style="color:var(--color-text-secondary)">'+e.desc+'</div>'
+    +'</div>';
+  }).join('');
+
+  return '<div class="ph-head">'
+    +'<div class="ph-eyebrow" style="color:'+p.color+'">Phase 1 of 4</div>'
+    +'<div class="ph-title">'+p.label+'</div>'
+    +'<div class="ph-desc">Four distinct pathways — all leading to the same branded onboarding experience</div>'
+  +'</div>'
+  +'<div class="entry-grid">'+cards+'</div>'
+  +'<div class="funnel"><div class="funnel-line"></div><div class="funnel-head" style="border-top:8px solid '+p.color+'"></div></div>'
+  +'<div class="join-box" style="background:'+p.bg+';border-color:'+p.color+';" onclick="go(1)">'
+    +'<div class="join-pulse" style="border-color:'+p.color+'20;"></div>'
+    +'<div class="join-title" style="color:'+p.text+'">Click "Join community"</div>'
+    +'<div class="join-sub" style="color:'+p.text+'99">All four paths converge here — candidate is redirected to the onboarding flow</div>'
+  +'</div>'
+  +'<div class="next-card" onclick="go(1)">'
+    +'<div><div class="next-text">Continue to onboarding</div><div class="next-sub">Profile setup — Phase 2</div></div>'
+    +'<div class="next-arrow">→</div>'
+  +'</div>';
+}
+
+function renderOnboard(){
+  var p=PH[1];
+  var steps=[
+    {n:1,label:'Upload CV or resume',body:'PDF or Word document — supported on all devices and browsers.',ai:false},
+    {n:2,label:'AI extracts profile data',body:'Skills, work history, education, and contact details are automatically parsed and pre-populated into the profile.',ai:true},
+    {n:3,label:'Review and complete',body:'Candidate reviews the AI-extracted data, corrects anything, and fills in any fields that couldn\'t be auto-populated.',ai:false},
+    {n:4,label:'Set preferences',body:'Choose preferred role types, locations, availability, expected rate, and notification channel (email, SMS, push).',ai:false},
+    {n:5,label:'Submit for review',body:'Completed profile is sent to the recruiter verification queue — candidate receives a confirmation.',ai:false}
+  ];
+  var rows=steps.map(function(s,i){
+    var last=i===steps.length-1;
+    var bc=s.ai?'#7F77DD':p.color;
+    var bb=s.ai?'#EEEDFE':p.bg;
+    var bt=s.ai?'#3C3489':p.text;
+    return '<div class="step-row">'
+      +'<div class="step-left">'
+        +'<div class="step-ball" style="background:'+bb+';color:'+bt+';border-color:'+bc+'">'+s.n+'</div>'
+        +(!last?'<svg width="2" height="100%" style="flex:1;min-height:20px;overflow:visible"><line x1="1" y1="0" x2="1" y2="100%" stroke="'+bc+'" stroke-width="1.5" stroke-dasharray="4 3"/></svg>':'')
+      +'</div>'
+      +'<div class="step-content">'
+        +'<div class="step-card" style="'+(s.ai?'border-color:#AFA9EC;background:#EEEDFE18;':'border-color:'+p.color+'25;')+'">'
+          +'<div class="step-card-head">'
+            +'<span class="step-card-title">'+s.label+'</span>'
+            +(s.ai?'<span class="ai-chip">AI-powered</span>':'')
+          +'</div>'
+          +'<div class="step-card-body">'+s.body+'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+
+  return '<div class="ph-head">'
+    +'<div class="ph-eyebrow" style="color:'+p.color+'">Phase 2 of 4</div>'
+    +'<div class="ph-title">'+p.label+'</div>'
+    +'<div class="ph-desc">A guided 5-step process — AI does the heavy lifting on data extraction so candidates spend less time filling forms</div>'
+  +'</div>'
+  +'<div class="stepper">'+rows+'</div>'
+  +'<div class="next-card" onclick="go(2)">'
+    +'<div><div class="next-text">Profile submitted to recruiter queue</div><div class="next-sub">Recruiter verification — Phase 3</div></div>'
+    +'<div class="next-arrow">→</div>'
+  +'</div>';
+}
+
+function renderVerify(){
+  var p=PH[2];
+  return '<div class="ph-head">'
+    +'<div class="ph-eyebrow" style="color:'+p.color+'">Phase 3 of 4</div>'
+    +'<div class="ph-title">'+p.label+'</div>'
+    +'<div class="ph-desc">Every candidate profile is manually reviewed by a recruiter before community access is granted — ensuring quality and fit</div>'
+  +'</div>'
+  +'<div class="stepper">'
+    +'<div class="step-row">'
+      +'<div class="step-left"><div class="step-ball" style="background:'+p.bg+';color:'+p.text+';border-color:'+p.color+'">1</div>'
+      +'<svg width="2" height="100%" style="flex:1;min-height:20px;overflow:visible"><line x1="1" y1="0" x2="1" y2="100%" stroke="'+p.color+'" stroke-width="1.5" stroke-dasharray="4 3"/></svg></div>'
+      +'<div class="step-content"><div class="step-card" style="border-color:'+p.color+'25;">'
+        +'<div class="step-card-title" style="margin-bottom:5px">Added to verification queue</div>'
+        +'<div class="step-card-body">Profile appears in the recruiter\'s review list. Recruiter receives a notification of a new community applicant awaiting review.</div>'
+      +'</div></div>'
+    +'</div>'
+    +'<div class="step-row">'
+      +'<div class="step-left"><div class="step-ball" style="background:'+p.bg+';color:'+p.text+';border-color:'+p.color+'">2</div>'
+      +'<svg width="2" height="100%" style="flex:1;min-height:20px;overflow:visible"><line x1="1" y1="0" x2="1" y2="100%" stroke="'+p.color+'" stroke-width="1.5" stroke-dasharray="4 3"/></svg></div>'
+      +'<div class="step-content"><div class="step-card" style="border-color:'+p.color+'25;">'
+        +'<div class="step-card-title" style="margin-bottom:5px">Recruiter reviews profile</div>'
+        +'<div class="step-card-body">Skills, work history, and community fit are assessed. Full CV is visible. Recruiter can view the complete onboarding submission.</div>'
+      +'</div></div>'
+    +'</div>'
+    +'<div class="step-row">'
+      +'<div class="step-left"><div class="step-ball" style="background:'+p.bg+';color:'+p.text+';border-color:'+p.color+';font-size:18px;font-weight:400">?</div></div>'
+      +'<div class="step-content">'
+        +'<div class="decision-card" style="background:'+p.bg+';border-color:'+p.color+';">'
+          +'<div class="decision-title" style="color:'+p.text+'">Is this candidate a good fit for the community?</div>'
+          +'<div class="decision-sub" style="color:'+p.text+'99">Recruiter makes the final call based on skills, experience, and alignment with community goals</div>'
+        +'</div>'
+        +'<div class="fork-row">'
+          +'<div class="fork-card" style="background:#EAF3DE;border-color:#639922;">'
+            +'<div class="fork-title" style="color:#27500A"><span style="width:18px;height:18px;border-radius:50%;background:#27500A;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:white;flex-shrink:0">✓</span>Accept</div>'
+            +'<div class="fork-sub" style="color:#3B6D11">Candidate is a strong fit for the community</div>'
+            +'<div class="fork-step" style="border-color:#C0DD97;"><span style="background:#1D9E75" class="fork-step" style="display:none"></span>Acceptance email sent with login link</div>'
+            +'<div class="fork-step" style="border-color:#C0DD97;margin-top:6px">Candidate logs in and accesses the full platform</div>'
+          +'</div>'
+          +'<div class="fork-card" style="background:#FCEBEB;border-color:#F09595;">'
+            +'<div class="fork-title" style="color:#791F1F"><span style="width:18px;height:18px;border-radius:50%;background:#A32D2D;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:white;flex-shrink:0;line-height:1">×</span>Decline</div>'
+            +'<div class="fork-sub" style="color:#A32D2D">Not the right fit at this time</div>'
+            +'<div class="fork-step" style="border-color:#F7C1C1">Notification sent to candidate</div>'
+            +'<div class="fork-step" style="border-color:#F7C1C1;margin-top:6px">Profile retained unless erasure is requested</div>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+  +'</div>'
+  +'<div class="next-card" onclick="go(3)">'
+    +'<div><div class="next-text">Candidate accepted — full platform access granted</div><div class="next-sub">Explore platform features — Phase 4</div></div>'
+    +'<div class="next-arrow">→</div>'
+  +'</div>';
+}
+
+function renderPlatform(){
+  var p=PH[3];
+  var mod=null;
+  for(var i=0;i<MODS.length;i++){if(MODS[i].id===selMod){mod=MODS[i];break;}}
+
+  var grid=MODS.map(function(m){
+    var sel=m.id===selMod;
+    return '<div class="mod-card '+(sel?'sel':'')+'" style="--mc:'+m.color+';--mb:'+m.bg+';--mt:'+m.text+';" onclick="sM(\''+m.id+'\')">'
+      +(m.future?'<div class="mod-future-tag">Soon</div>':'')
+      +'<div class="mod-icon-wrap" style="background:'+(sel?m.color+'22':'var(--color-background-primary)')+'">'+icon(m.icon,sel?m.color:'var(--color-text-tertiary)',20)+'</div>'
+      +'<div class="mod-title">'+m.label+'</div>'
+      +'<div class="mod-count">'+m.items.length+' feature'+(m.items.length!==1?'s':'')+'</div>'
+    +'</div>';
+  }).join('');
+
+  var feats=mod.items.map(function(f){
+    return '<div class="feat-row">'
+      +'<div class="feat-dot" style="background:'+mod.color+'"></div>'
+      +'<div><div class="feat-title">'+f.l+'</div><div class="feat-desc">'+f.d+'</div></div>'
+    +'</div>';
+  }).join('');
+
+  return '<div class="ph-head">'
+    +'<div class="ph-eyebrow" style="color:'+p.color+'">Phase 4 of 4</div>'
+    +'<div class="ph-title">'+p.label+'</div>'
+    +'<div class="ph-desc">Once accepted, candidates have access to six core areas of the platform. Select a module below to explore its features.</div>'
+  +'</div>'
+  +'<div class="mod-grid">'+grid+'</div>'
+  +'<div class="detail-panel" id="detail-panel">'
+    +'<div class="detail-header" style="background:'+mod.bg+'20;">'
+      +'<div class="detail-icon-big" style="background:'+mod.bg+'">'+icon(mod.icon,mod.color,22)+'</div>'
+      +'<div>'
+        +'<div class="detail-h-title">'+mod.label+(mod.future?' <span style="font-size:11px;font-weight:400;color:#993556">(coming soon)</span>':'')+'</div>'
+        +'<div class="detail-h-sub">'+mod.desc+'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="feat-list">'+feats+'</div>'
+  +'</div>';
+}
+
+function renderFoot(){
+  var dots=PH.map(function(_,i){
+    return '<div class="foot-dot" style="width:'+(i===cur?22:8)+'px;background:'+(i===cur?PH[cur].color:'var(--color-border-secondary)')+'"></div>';
+  }).join('');
+  return '<div class="foot">'
+    +'<button class="foot-btn" '+(cur===0?'disabled':'')+' onclick="go('+(cur-1)+')">← Back</button>'
+    +'<div class="foot-dots">'+dots+'</div>'
+    +'<button class="foot-btn" '+(cur===PH.length-1?'disabled':'')+' onclick="go('+(cur+1)+')">Next →</button>'
+  +'</div>';
+}
+
+function render(){
+  renderProg();
+  var body=[renderEntry,renderOnboard,renderVerify,renderPlatform][cur]();
+  document.getElementById('content').innerHTML='<div class="phase-body">'+body+renderFoot()+'</div>';
+}
+
+function go(i){if(i<0||i>=PH.length)return;cur=i;render();}
+function sM(id){selMod=id;render();}
+render();
+</script>
+</body></html>
